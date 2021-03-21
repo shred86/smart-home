@@ -1,0 +1,202 @@
+
+# Home Assistant Security System with Konnected.io
+
+This is the setup I used to create a security system within Home Assistant using Konnected.io that replaced a Concord 4 traditional security system. It had hardwired door/window sensors, motion sensors and a siren. I primarily use Home Assistant as the back end of my smart home but expose everything 
+
+## Create manual alarm control panel in Home Assistant
+
+Add the following to the configuration.yaml file to create a [manual alarm control panel](https://www.home-assistant.io/integrations/manual/):
+
+```
+alarm_control_panel:
+  - platform: manual
+    name: Alarm System
+    arming_time: 0
+    delay_time: 30
+    trigger_time: 600
+    armed_away:
+      arming_time: 30
+    disarmed:
+      trigger_time: 0
+```
+
+This setup will 1) only put a 30 second arming delay when set to armed_away, 2) have a 30 second delay timer when the alarm is tripped (i.e. 30 second pending state) and 3) the alarm panel will never set the state to triggered if in a disarmed state.
+
+## Add konnected.io integration
+
+Configure zones, ALARM1, OUT1 and OUT2/ALARM2 as desired.
+
+For ALARM1, set "Output when on" to high and leave everything else defaulted to 0.
+
+For OUT1, create two states. The first one is a single beep with a 24 ms pulse duration which will be used in an automation for a count down timer. The second one is a double beep with a 24 ms pulse duration, 54 ms pause between pulses and repeats twice, which will be used when doors or windows are opened.
+
+## Create automations for core functionality
+
+### Automations: Trigger
+
+**Trigger the security system when armed_away**
+* Name: Security System: Trigger when armed_away
+* Triggers: Door/windows, motion sensors
+* Condition:
+  * Condition type: State
+  * Entity: alarm_control_panel.security_system
+  * State: armed_away
+* Action:
+  * Action type: Call service
+  * Service: alarm_control_panel.security_system
+  * Targets: Security System
+
+**Trigger the security system when armed_home**
+* Name: Security System: Trigger when armed_home
+* Triggers: Door/windows (with exceptions)
+* Condition:
+    * Condition type: State
+    * Entity: alarm_control_panel.security_system
+    * State: armed_home
+* Action:
+    * Action type: Call service
+    * Service: alarm_control_panel.security_system
+    * Targets: Security System
+
+**Trigger the security system when armed_night**
+* Name: Security System: Trigger when armed_night
+* Triggers: Door/windows, exceptions
+* Condition:
+    * Condition type: State
+    * Entity: alarm_control_panel.security_system
+    * State: armed_night
+* Action:
+    * Action type: Call service
+    * Service: alarm_control_panel.security_system
+    * Targets: Security System
+
+Note: armed_night is simply a repeat of armed_home for now.
+
+### Automations: Notifications
+
+**Send a mobile notification when the security system is armed to armed_away**
+* Name: Security System: Notify when armed_away
+* Triggers:
+    * Trigger type: State
+    * Entity: alarm_control_panel.security_system
+    * To: armed_away
+* Action:
+    * Action type: Call service
+    * Service: notify.mobile_app_*
+    * Data: message: Security system armed to away mode
+
+**Send a mobile notification when the security system is armed to armed_home**
+* Name: Security System: Notify when armed_home
+* Triggers:
+    * Trigger type: State
+    * Entity: alarm_control_panel.security_system
+    * To: armed_home
+* Action:
+    * Action type: Call service
+    * Service: notify.mobile_app_*
+    * Data: message: Security system armed to home mode
+
+**Send a mobile notification when the security system is armed to armed_night**
+* Name: Security System: Notify when armed_night
+* Triggers:
+    * Trigger type: State
+    * Entity: alarm_control_panel.security_system
+    * To: armed_night
+* Action:
+    * Action type: Call service
+    * Service: notify.mobile_app_*
+    * Data: message: Security system armed to night mode
+
+**Send a mobile notification when security system is disarmed**
+* Name: Security System: Notify when disarmed
+* Triggers:
+    * Trigger type: State
+    * Entity: alarm_control_panel.security_system
+    * To: disarmed
+* Action:
+    * Action type: Call service
+    * Service: notify.mobile_app_*
+    * Data: message: Security system disarmed
+
+**Send a mobile notification when security system is pending**
+* Name: Security System: Notify when pending
+* Triggers:
+    * Trigger type: State
+    * Entity: alarm_control_panel.security_system
+    * To: pending
+* Action:
+    * Action type: Call service
+    * Service: notify.mobile_app_*
+    * Data: message: Security system trigger delay in progress!
+
+**Send a mobile notification when security system is triggered**
+* Name: Security System: Notify when triggered
+* Triggers:
+    * Trigger type: State
+    * Entity: alarm_control_panel.security_system
+    * To: triggered
+* Action:
+    * Action type: Call service
+    * Service: notify.mobile_app_*
+    * Data: message: Security system has been triggered!
+
+### Automations: Actions
+
+**Create a count down beeper when the security system is pending**
+* Name: Security System: Action when pending
+* Triggers:
+    * Trigger type: State
+    * Entity: alarm_control_panel.security_system
+    * To: pending
+* Action:
+    * Action type: Repeat
+    * Repeat type: Until
+      * Until conditions:
+        * Condition type: State
+        * Entity: alarm_control_panel.security_system
+        * State: disarmed
+      * Actions:
+        * Action type: Call service
+        * Service: switch.toggle
+        * Targets: switch.beeper
+        * Action type: Delay (1 second)
+
+**Turn on the siren and lights when security system is triggered**
+* Name: Security System: Action when triggered
+* Triggers:
+    * Trigger type: State
+    * Entity: alarm_control_panel.security_system
+    * To: triggered
+* Action:
+    * Action type: Call service
+    * Service: switch.turn_on
+    Targets: Alarm Siren, Switches, Lights
+
+**Turn off the siren when security system is disarmed**
+* Name: Security System: Action when disarmed
+* Triggers:
+    * Trigger type: State
+    * Entity: alarm_control_panel.security_system
+    * From: triggered
+    * To: disarmed
+* Action:
+    * Action type: Call service
+    * Service: switch.turn_off
+    * Targets: Alarm Siren
+
+## Create automations for misc functionality
+
+**Sound double beeper on door/window open when system disarmed**
+* Name: Security System: Sound double beeper on door/window open
+* Triggers:
+    * Trigger type: State
+    * Entity: All window and door sensors
+    * To: on
+* Conditions:
+    * Condition type: State
+    * Entity: alarm_control_panel.security_system
+    * State: disarmed
+* Action:
+    * Action type: Call service
+    * Service: switch.turn_on
+    * Targets: Double Beeper
