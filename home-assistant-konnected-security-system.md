@@ -1,16 +1,16 @@
 
 # Home Assistant Security System with Konnected.io
 
-This is the setup I used to create a security system within Home Assistant using Konnected.io that replaced a Concord 4 traditional security system. It had hardwired door/window sensors, motion sensors and a siren. I primarily use Home Assistant as the back end of my smart home but expose everything 
+This is the setup I used to create a security system within [Home Assistant](http://home-assistant.io) using [Konnected.io](http://konnected.io) which replaced a [Concord 4](https://www.interlogix.com/intrusion/product/concord-4) traditional security system. It had hardwired door/window sensors, motion sensors and a siren that I was able to use with konnected.io.
 
-## Create manual alarm control panel in Home Assistant
+## Create manual alarm control panel
 
 Add the following to the configuration.yaml file to create a [manual alarm control panel](https://www.home-assistant.io/integrations/manual/):
 
 ```
 alarm_control_panel:
   - platform: manual
-    name: Alarm System
+    name: Security System
     arming_time: 0
     delay_time: 30
     trigger_time: 600
@@ -70,7 +70,7 @@ For OUT1, create two states. The first one is a single beep with a 24 ms pulse d
     * Service: alarm_control_panel.security_system
     * Targets: Security System
 
-Note: armed_night is simply a repeat of armed_home for now.
+_Note: armed_night is simply a repeat of armed_home for now._
 
 ### Automations: Notifications
 
@@ -200,3 +200,5 @@ Note: armed_night is simply a repeat of armed_home for now.
     * Action type: Call service
     * Service: switch.turn_on
     * Targets: Double Beeper
+
+_Note: The reason this only functions in the disarmed state is because I was having an issue with the count down timer automation if I tried to have the double beeper and the count down beeper operating at the same time since they both use the same piezo sounder device._
