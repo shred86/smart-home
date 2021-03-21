@@ -20,7 +20,7 @@ alarm_control_panel:
       trigger_time: 0
 ```
 
-This setup will 1) only put a 30 second arming delay when set to armed_away, 2) have a 30 second delay timer when the alarm is tripped (i.e. 30 second pending state) and 3) the alarm panel will never set the state to triggered if in a disarmed state.
+Some highlights for this setup: 1) 30 second arming delay only when set to armed_away, 2) 30 second delay timer (i.e. pending state) when the alarm is tripped and 3) the alarm panel will never set the state to triggered if in a disarmed state.
 
 ## Add konnected.io integration
 
@@ -48,7 +48,7 @@ For OUT1, create two states. The first one is a single beep with a 24 ms pulse d
 
 **Trigger the security system when armed_home**
 * Name: Security System: Trigger when armed_home
-* Triggers: Door/windows (with exceptions)
+* Triggers: Door/windows (with exceptions as desired)
 * Condition:
     * Condition type: State
     * Entity: alarm_control_panel.security_system
@@ -60,7 +60,7 @@ For OUT1, create two states. The first one is a single beep with a 24 ms pulse d
 
 **Trigger the security system when armed_night**
 * Name: Security System: Trigger when armed_night
-* Triggers: Door/windows, exceptions
+* Triggers: Door/windows (with exceptions as desired)
 * Condition:
     * Condition type: State
     * Entity: alarm_control_panel.security_system
@@ -69,8 +69,6 @@ For OUT1, create two states. The first one is a single beep with a 24 ms pulse d
     * Action type: Call service
     * Service: alarm_control_panel.security_system
     * Targets: Security System
-
-_Note: armed_night is simply a repeat of armed_home for now._
 
 ### Automations: Notifications
 
