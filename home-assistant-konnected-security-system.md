@@ -1,7 +1,7 @@
 
 # Home Assistant Security System with Konnected.io
 
-This is the setup I used to create a security system within [Home Assistant](http://home-assistant.io) using [Konnected.io](http://konnected.io) which replaced a [Concord 4](https://www.interlogix.com/intrusion/product/concord-4) traditional security system. It had hardwired door/window sensors, motion sensors and a siren that I was able to use with konnected.io.
+This is the setup I used to create a security system within [Home Assistant](http://home-assistant.io) using the [Konnected](http://konnected.io) Alarm Panel Pro which replaced a [Concord 4](https://www.interlogix.com/intrusion/product/concord-4) traditional security system. It had hardwired door/window sensors, motion sensors and a siren that I was able to use with konnected.io.
 
 ## Create manual alarm control panel
 
@@ -80,7 +80,7 @@ For OUT1, create two states. The first one is a single beep with a 24 ms pulse d
     * To: armed_away
 * Action:
     * Action type: Call service
-    * Service: notify.mobile_app_*
+    * Service: notify.notify
     * Data: message: Security system armed to away mode
 
 **Send a mobile notification when the security system is armed to armed_home**
@@ -91,7 +91,7 @@ For OUT1, create two states. The first one is a single beep with a 24 ms pulse d
     * To: armed_home
 * Action:
     * Action type: Call service
-    * Service: notify.mobile_app_*
+    * Service: notify.notify
     * Data: message: Security system armed to home mode
 
 **Send a mobile notification when the security system is armed to armed_night**
@@ -102,7 +102,7 @@ For OUT1, create two states. The first one is a single beep with a 24 ms pulse d
     * To: armed_night
 * Action:
     * Action type: Call service
-    * Service: notify.mobile_app_*
+    * Service: notify.notify
     * Data: message: Security system armed to night mode
 
 **Send a mobile notification when security system is disarmed**
@@ -113,7 +113,7 @@ For OUT1, create two states. The first one is a single beep with a 24 ms pulse d
     * To: disarmed
 * Action:
     * Action type: Call service
-    * Service: notify.mobile_app_*
+    * Service: notify.notify
     * Data: message: Security system disarmed
 
 **Send a mobile notification when security system is pending**
@@ -124,7 +124,7 @@ For OUT1, create two states. The first one is a single beep with a 24 ms pulse d
     * To: pending
 * Action:
     * Action type: Call service
-    * Service: notify.mobile_app_*
+    * Service: notify.notify
     * Data: message: Security system trigger delay in progress!
 
 **Send a mobile notification when security system is triggered**
@@ -135,7 +135,7 @@ For OUT1, create two states. The first one is a single beep with a 24 ms pulse d
     * To: triggered
 * Action:
     * Action type: Call service
-    * Service: notify.mobile_app_*
+    * Service: notify.notify
     * Data: message: Security system has been triggered!
 
 ### Automations: Actions
