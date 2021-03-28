@@ -200,3 +200,45 @@ For OUT1, create two states. The first one is a single beep with a 24 ms pulse d
     * Targets: Double Beeper
 
 _Note: The reason this only functions in the disarmed state is because I was having an issue with the count down timer automation if I tried to have the double beeper and the count down beeper operating at the same time since they both use the same piezo sounder device._
+
+## Make notifications actionable
+
+Add the following to the configuration.yaml to create a category (type of notification) and action:
+
+```
+ios:
+  push:
+    categories:
+      - name: "Security System"
+        identifier: 'security_system_notification'
+        actions:
+          - identifier: 'DISARM_SECURITY_SYSTEM'
+            title: 'Disarm'
+            authenticationRequired: true
+            destructive: true
+```
+
+The `authenticationRequired` and `destructive` lines are optional. See the [Home Assistant Actionable Notifications documentation](https://companion.home-assistant.io/docs/notifications/actionable-notifications) for more details.
+
+Modify the existing "Security System: Notify when pending" and "Security System: Notify when triggered" automations that were created above to include the actionable notification by adding the following data to the `notify.mobile_app_*` service.
+
+```
+push:
+  category: security_system_notification
+  sound:
+    name: default
+    critical: 1
+    volume: 1
+```
+
+Lastly, create an automation that will perform the desired behavior when the actionable notification action is selected.
+
+* Name: Security System: Disarm from actionable notification
+* Triggers:
+    * Trigger type: Event
+    * Event type: ios.notification_action_fired
+    * Event data: actionName: DISARM_SECURITY_SYSTEM
+* Action:
+    * Action type: Call service
+    * Service: alarm_control_panel.alarm_disarm
+    * Targets: Security System
