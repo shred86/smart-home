@@ -3,6 +3,8 @@
 
 This is the setup I used to create a security system within [Home Assistant](http://home-assistant.io) using the [Konnected](http://konnected.io) Alarm Panel Pro which replaced a [Concord 4](https://www.interlogix.com/intrusion/product/concord-4) traditional security system. It had hardwired door/window sensors, motion sensors and a siren that I was able to use with konnected.io.
 
+Update: I ran this setup for about a week but switched over to [Alarmo](https://github.com/nielsfaber/alarmo) which is a custom component for Home Assistant. It makes the process of creating an alarm system signifcantly easier and also provides additional features.
+
 ## Create manual alarm control panel
 
 Add the following to the configuration.yaml file to create a [manual alarm control panel](https://www.home-assistant.io/integrations/manual/):
