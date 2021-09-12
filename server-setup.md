@@ -30,8 +30,24 @@ Go back and comment out `PermitRootLogin` in `/etc/ssh/sshd_config`
 
 ### Setup email SMTP for notifications:
 1. `sudo apt install exim4-daemon-light`
-2. `dpkg-reconfigure exim4-config` and follow instructions - use `smtp.gmail.com::465`
+2. `dpkg-reconfigure exim4-config` and setup using the following:
+
+````
+    General type of mail configuration:	mail sent by smarthost; received via SMTP or fetchmail
+    System mail name:	localhost
+    IP addresses to listen on for incoming SMTP connections:	127.0.0.1 (leave default)
+    Other destinations for which mail is accepted:	Leave empty.
+    Machines to relay mail for:	Leave empty.
+    IP address or host name of the outgoing smarthost:	smtp.gmail.com::587
+    Hide local mail name in outgoing mail?:	No
+    Keep number of DNS-queries minimal (Dial-on-Demand)?:	No
+    Delivery method for local mail:	mbox format in /var/mail/
+    Split configuration into small files?:	No
+````
+
 3. `sudo nano /etc/exim4/passwd.client` and add `smtp.gmail.com:username@gmail.com:mypassword`
+4. Send test email using `echo test only | mail -s 'Test Subject' user@gmail.com`
+5. Logs are located in `/var/log/exim4/mainlog`
 
 ### Enable unattended upgrades:
 1. `sudo dpkg-reconfigure -plow unattended-upgrades` to enable unattended upgrades
