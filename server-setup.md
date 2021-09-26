@@ -21,11 +21,11 @@ Instructions are for setting up my home server on an AWOW AL34 & AK41 Mini PC wi
 1. `ssh-copy-id root@<server ip>`
 2. `ssh-copy-id <username>@<server ip>`
 
-Go back and comment out `PermitRootLogin` in `/etc/ssh/sshd_config`
+Go back and comment out `PermitRootLogin` in `/etc/ssh/sshd_config` to only allow root login with SSH keys (i.e. prohibit password).
 
 ### Mount additional hard drives:
 1. `lsblk -f` to view current mounted drives and partitions
-2. `sudo nano /etc/fstab` and add a line with the UUID, mount point, file system type, options, dump and pass options: `UUID=<uuid> /home/user/backup ext4    defaults        0       0`
+2. `sudo nano /etc/fstab` and add a line with the UUID, mount point, file system type, options, dump and pass options: `UUID=<uuid> /home/user/backup ext4    defaults        0       2` (example of a permanently mounted drive)
 
 ### Setup email SMTP for notifications:
 1. `sudo apt install exim4-daemon-light`
