@@ -1,16 +1,15 @@
 # Home Server Setup
-Instructions are for setting up my home server on an AWOW AL34 & AK41 Mini PC with Debian 11 Bullseye. The following steps assume the Debian install is already complete.
+Instructions are for setting up my home server on an Seeed Odyssey x86 Blue with Debian 11 Bullseye. The following steps assume the Debian install is already complete.
 
 ## Administrative
 ### Install and setup sudo:
 1. `apt install sudo`
 2. `/sbin/usermod -aG sudo <username>`
 
-### Install missing drivers:
+### Install missing driver:
 1. `sudo nano /etc/apt/sources.list` and add `non-free` after `main` to `deb http://deb.debian.org/debian/ bullseye main` and `deb-src http://deb.debian.org/debian/ bullseye main`
 2. `sudo apt update`
-3. `sudo apt install firmware-realtek`
-4. `apt install firmware-misc-nonfree`
+3. `apt install firmware-misc-nonfree`
 
 ### Add SSH keys for root and user account:
 1. `sudo nano /etc/ssh/sshd_config`
@@ -50,7 +49,7 @@ Go back and comment out `PermitRootLogin` in `/etc/ssh/sshd_config` to only allo
 
 ### Enable unattended upgrades:
 1. `sudo dpkg-reconfigure -plow unattended-upgrades` to enable unattended upgrades
-2. `sudo nano /etc/apt/apt.conf.d/50unattended-upgrades` and uncomment `Unattended-Upgrade::Automatic-Reboot "true";`, `Unattended-Upgrade::Automatic-Reboot-Time "03:00";` and `Unattended-Upgrade::Mail "user@email.com";`
+2. `sudo nano /etc/apt/apt.conf.d/50unattended-upgrades` and uncomment `Unattended-Upgrade::Automatic-Reboot "false";`, `Unattended-Upgrade::Automatic-Reboot-Time "03:00";` and `Unattended-Upgrade::Mail "user@email.com";`. Set `Unattended-Upgrade::Automatic-Reboot "false";` from `false` to `true`.
 
 ### Install Docker & Docker Compose:
 1. https://docs.docker.com/engine/install/debian/
@@ -69,7 +68,7 @@ On step 3, only `sudo groupadd apex` is needed to supress an log warning
 
 ## Restore Docker containers:
 ### Restore volumes
-1. `docker create volume <volume name>` for every volume needed
+1. `docker volume create <volume name>` for every volume needed
 2. From the backup drive, `cp -r volumes /var/lib/docker/`
 
 ### Start the containers
