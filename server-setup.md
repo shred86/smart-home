@@ -77,7 +77,7 @@ On step 3, only `sudo groupadd apex` is needed to supress an log warning
 ## Setup Network UPS
 ### Install & setup NUT server:
 1. `sudo apt install nut-server`
-2. `sudo nano /lib/systemd/system/nut-server.service` and add (fixes issue after reboot where nut-server will fail to start):
+2. `sudo nano /lib/systemd/system/nut-server.service` and add (fixes issue after reboot where nut-server will fail to start)
 
 ````
 [Service]
@@ -89,6 +89,11 @@ ExecStartPre=/bin/sleep 30
 ### Install & setup NUT clients (on second server):
 1. `sudo apt install nut-client`
 2. Restore NUT client config files
+
+## Setup iptables on enp3s0
+This is an added layer of security since the server is connected to the same network, via the second NIC port, the cameras reside on which is a separate VLAN with no access to the internet (or any other subnets on the network). This is to allow the [Frigate](https://frigate.video) service to directly record from the cameras without having to route through different VLANs (reduces significant overhead on the router). This firewall rule will block (drop) all access to the server accept for those initiated by Frigate since the Linux firewall is stateful.
+1. `sudo iptables -A INPUT -i enp3s0 -p all -j DROP` to drop all inbound traffic on enp3s0
+2. `sudo /sbin/iptables-save` to save the iptables to persist between restarts
 
 ## Backups
 ### Install rsync:
