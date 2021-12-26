@@ -94,9 +94,11 @@ ExecStartPre=/bin/sleep 30
 This is an added layer of security since the server is connected to the same network, via the second NIC port, the cameras reside on which is a separate VLAN with no access to the internet (or any other subnets on the network). This is to allow the [Frigate](https://frigate.video) service to directly record from the cameras without having to route through different VLANs (reduces significant overhead on the router).
 1. `sudo iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT` to allow traffic from established connections (i.e. stateful firewall)
 2. `sudo iptables -A INPUT -i enp3s0 -p udp -j ACCEPT` to accept UDP traffic for the WebRTC integration in Home Assistant (can further specify UDP ports as well)
-3. `sudo iptables -A INPUT -i enp3s0 -p all -j DROP` to drop all inbound traffic on enp3s0
-4. `sudo apt install iptables-persistent` to save the iptables to persist between restarts
-5. Use `sudo iptables-save > /etc/iptables/rules.v4` after modifying rules to update persistant tables
+3. `sudo iptables -A INPUT -i enp3s0 -p all -j DROP` to drop all inbound traffic on enp3s0 IPv4
+4. `sudo ip6tables -A INPUT -i enp3s0 -p all -j DROP` to drop all inbound traffic on enp3s0 for IPv6
+5. `sudo iptables -L -v` and `sudo ip6tables -L -v` to view iptables to make sure changes were made
+6. `sudo apt install iptables-persistent` to save the iptables to persist between restarts
+7. Switch to root, `/sbin/iptables-save > /etc/iptables/rules.v4` and `/sbin/ip6tables-save > /etc/iptables/rules.v6` after modifying rules to update persistant tables.
 
 ## Backups
 ### Install rsync:
