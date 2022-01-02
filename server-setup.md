@@ -94,14 +94,14 @@ ExecStartPre=/bin/sleep 30
 This is an added layer of security since the server is connected to the same network, via the second NIC port, the cameras reside on which is a separate VLAN with no access to the internet (or any other subnets on the network). This is to allow the [Frigate](https://frigate.video) service to directly record from the cameras without having to route through different VLANs (reduces significant overhead on the router).
 
 ### Setup rules on the INPUT chain
-1. `sudo iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT` to allow traffic from established connections (i.e. stateful firewall)
+1. `sudo iptables -A INPUT -i enp3s0 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT` to allow traffic from established connections (i.e. stateful firewall)
 2. `sudo iptables -A INPUT -i enp3s0 -p udp -j ACCEPT` to accept UDP traffic for the WebRTC integration in Home Assistant (can further specify UDP ports as well)
 3. `sudo iptables -A INPUT -i enp3s0 -p all -j DROP` to drop all inbound traffic on enp3s0 IPv4
 4. `sudo iptables -vL` to make sure the rules were added
 
 ### Setup rules on the DOCKER-USER chain
 Docker adds a rule to the PREROUTING chain on the nat table which can be viewed using `sudo iptables -vL -t nat`. This will redirect traffic that will be delievered locally on the host to the DOCKER chain on the filter table (where we added the rules above), effectivelly bypassing the rules we just added. As such, the same rules above need to be added to the DOCKER-USER chain per the [Docker documentation](https://docs.docker.com/network/iptables/) (don't add user rules directly to the DOCKER chain).
-1. `sudo iptables -A DOCKER-USER -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT`
+1. `sudo iptables -A DOCKER-USER -i enp3s0 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT`
 2. `sudo iptables -A DOCKER-USER -i enp3s0 -p all -j DROP`
 3. `sudo iptables -vL -t nat` to make sure the rules were added
 
