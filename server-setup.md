@@ -49,7 +49,7 @@ Go back and comment out `PermitRootLogin` in `/etc/ssh/sshd_config` to only allo
 
 ### Enable unattended upgrades:
 1. `sudo dpkg-reconfigure -plow unattended-upgrades` to enable unattended upgrades
-2. `sudo nano /etc/apt/apt.conf.d/50unattended-upgrades` and uncomment `Unattended-Upgrade::Automatic-Reboot "false";`, `Unattended-Upgrade::Automatic-Reboot-Time "03:00";` and `Unattended-Upgrade::Mail "user@email.com";`. Set `Unattended-Upgrade::Automatic-Reboot "false";` from `false` to `true`.
+2. `sudo nano /etc/apt/apt.conf.d/50unattended-upgrades` and uncomment and specify email address for `Unattended-Upgrade::Mail "user@email.com";`.
 
 ### Install Docker & Docker Compose:
 1. https://docs.docker.com/engine/install/debian/
