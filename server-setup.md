@@ -105,7 +105,7 @@ Docker adds a rule to the PREROUTING chain on the nat table which can be viewed 
 1. `sudo iptables -A DOCKER-USER -i enp3s0 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT`
 2. `sudo iptables -A INPUT -i enp3s0 -p udp --dport 123 -j ACCEPT`
 3. `sudo iptables -A DOCKER-USER -i enp3s0 -p all -j DROP`
-4. `sudo iptables -vL -t nat` to make sure the rules were added
+4. `sudo iptables -vL` to make sure the rules were added
 
 ### Add rule for IPv6
 1. `sudo ip6tables -A INPUT -i enp3s0 -p all -j DROP` to drop all inbound traffic on enp3s0 for IPv6
