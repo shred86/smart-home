@@ -84,7 +84,7 @@ On step 3, only `sudo groupadd apex` is needed to supress an log warning
 ExecStartPre=/bin/sleep 30
 ````
 3. From the NUT folder on the back up drive, `cp -r * /etc/nut`
-4. `sudo systemctl reboot nut-server`
+4. `sudo systemctl restart nut-server`
 
 ### Install & setup NUT clients (on second server):
 1. `sudo apt install nut-client`
